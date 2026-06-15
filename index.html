@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YaResearchScheduler · Demo</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;font-size:14px;color:#1C1C1E;background:#F5F5F7;line-height:1.5}
+button{cursor:pointer;font:inherit;border:none;background:none}
+input,select,textarea{font:inherit;outline:none}
+:root{
+  --red:#F04E37;--red-l:#FEF0ED;
+  --grn:#22C55E;--grn-l:#DCFCE7;--grn-t:#16A34A;
+  --g1:#F5F5F7;--g2:#E5E7EB;--g3:#9CA3AF;--g4:#6B7280;--g5:#374151;
+  --white:#FFFFFF;--brd:#E5E7EB;--r:12px;--sh:0 1px 3px rgba(0,0,0,.08)
+}
+.layout{display:flex;height:100vh;overflow:hidden}
+.lmain{flex:1;overflow-y:auto}
+
+/* ── RESEARCHER SIDEBAR ── */
+.rs{width:248px;min-width:248px;background:var(--white);border-right:1px solid var(--brd);display:flex;flex-direction:column;padding:16px 0}
+.rs-logo{display:flex;align-items:center;gap:10px;padding:0 20px 20px}
+.rs-icon{width:36px;height:36px;background:var(--red);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:800;flex-shrink:0}
+.rs-txt{font-size:13px;font-weight:700;line-height:1.25}
+.rs-sub{font-size:11px;font-weight:400;color:var(--g4)}
+.rn{flex:1;padding:0 10px}
+.rni{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;font-size:14px;color:var(--g5);cursor:pointer;margin-bottom:2px;transition:all .15s}
+.rni:hover{background:var(--g1)}
+.rni.on{background:var(--red-l);color:var(--red);font-weight:500}
+.rni .ic{width:19px;text-align:center;font-size:15px}
+.r-create{margin:10px 10px;padding:11px;border-radius:8px;background:var(--red);color:#fff;font-size:14px;font-weight:600;text-align:center;cursor:pointer}
+.r-create:hover{opacity:.9}
+.r-user{margin:8px 10px 0;padding:12px;background:var(--g1);border-radius:8px}
+.r-uname{font-size:14px;font-weight:600}
+.r-urole{font-size:12px;color:var(--g4)}
+.r-logout{display:flex;align-items:center;gap:6px;margin:6px 10px 4px;padding:7px 12px;font-size:13px;color:var(--g4);cursor:pointer;border-radius:6px}
+.r-logout:hover{color:var(--red);background:var(--red-l)}
+
+/* ── AGENCY SIDEBAR ── */
+.as{width:248px;min-width:248px;background:#1C1C1E;display:flex;flex-direction:column;padding:20px 0}
+.as-logo{padding:0 20px 16px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:14px}
+.as-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:2px}
+.as-agency{font-size:13px;color:rgba(255,255,255,.45)}
+.an{flex:1;padding:0 10px}
+.ani{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;font-size:14px;color:rgba(255,255,255,.55);cursor:pointer;margin-bottom:2px;transition:all .15s}
+.ani:hover{color:#fff;background:rgba(255,255,255,.08)}
+.ani.on{background:#fff;color:#1C1C1E;font-weight:600}
+
+/* ── CONTENT ── */
+.content{padding:32px 40px}
+.content.narrow{max-width:780px}
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px}
+.ptitle{font-size:26px;font-weight:700;margin-bottom:3px}
+.psub{font-size:14px;color:var(--g4)}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;transition:all .15s;border:1px solid transparent}
+.btn-r{background:var(--red);color:#fff}.btn-r:hover{opacity:.9}
+.btn-ol{background:#fff;border-color:var(--brd);color:var(--g5)}.btn-ol:hover{background:var(--g1);border-color:#CBD5E1}
+.btn-gh{color:var(--g5)}.btn-gh:hover{background:var(--g1)}
+.btn-ghr{color:var(--red)}.btn-ghr:hover{background:var(--red-l)}
+.btn-dk{background:#1C1C1E;color:#fff}.btn-dk:hover{opacity:.85}
+.btn-gray{background:var(--g1);border:1px solid var(--brd);color:var(--g5);border-radius:12px;padding:14px 20px;font-size:15px;font-weight:500}
+.btn-gray:hover{background:var(--g2)}
+.btn-full{width:100%;padding:15px;border-radius:12px;background:var(--red);color:#fff;font-size:16px;font-weight:600;transition:opacity .15s}
+.btn-full:hover{opacity:.9}
+.btn-full.dis{background:#FFBBA8;cursor:default}
+.btn-full.dis:hover{opacity:1}
+.mla{margin-left:auto}
+
+/* ── STATS ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.sc{background:#fff;border:1px solid var(--brd);border-radius:var(--r);padding:18px 22px;box-shadow:var(--sh)}
+.sn{font-size:36px;font-weight:700;color:var(--red);line-height:1;margin-bottom:3px}
+.sl{font-size:13px;color:var(--g4)}
+
+/* ── PROJECT CARD ── */
+.pc{background:#fff;border:1px solid var(--brd);border-radius:var(--r);padding:20px 22px;margin-bottom:14px;box-shadow:var(--sh)}
+.pc-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:3px}
+.pc-name{font-size:17px;font-weight:700}
+.pc-type{font-size:13px;color:var(--g4);margin-bottom:14px}
+.badge-grn{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;background:var(--grn-l);color:var(--grn-t);font-size:12px;font-weight:600;white-space:nowrap}
+.badge-act{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;background:var(--grn-l);color:var(--grn-t);font-size:12px;font-weight:600}
+.prog-wrap{position:relative;margin-bottom:12px}
+.prog-lbl{position:absolute;right:0;top:-18px;font-size:12px;color:var(--g4)}
+.prog{height:6px;background:var(--g2);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:var(--grn);border-radius:3px}
+.pc-meta{display:flex;align-items:center;font-size:13px;color:var(--g5);margin-bottom:12px;flex-wrap:wrap;gap:0}
+.pc-meta span{margin-right:14px}
+.pc-link{margin-left:auto;font-size:12px;color:var(--g3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
+.pc-actions{display:flex;align-items:center;gap:2px;border-top:1px solid var(--brd);padding-top:12px}
+
+/* ── CARD ── */
+.card{background:#fff;border:1px solid var(--brd);border-radius:var(--r);box-shadow:var(--sh)}
+.cp{padding:20px 22px}
+.mb3{margin-bottom:12px}.mb4{margin-bottom:16px}.mb6{margin-bottom:24px}
+.mt2{margin-top:8px}.mt3{margin-top:12px}.mt4{margin-top:16px}
+
+/* ── TABS ── */
+.tabs{display:flex;border-bottom:1px solid var(--brd);margin-bottom:18px}
+.tab{padding:11px 18px;font-size:14px;font-weight:500;color:var(--g4);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.tab:hover{color:var(--g5)}
+.tab.on{color:var(--red);border-bottom-color:var(--red)}
+
+/* ── TABLE ── */
+.dt{width:100%;border-collapse:collapse}
+.dt th{text-align:left;padding:11px 16px;font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--g3);border-bottom:1px solid var(--brd)}
+.dt td{padding:13px 16px;border-bottom:1px solid var(--brd);font-size:14px;color:var(--g5)}
+.dt tr:last-child td{border-bottom:none}
+
+/* ── FORMS ── */
+.fg{margin-bottom:18px}
+.flbl{display:block;font-size:14px;font-weight:500;margin-bottom:7px}
+.flbl .req{color:var(--red)}
+.fi{width:100%;padding:11px 14px;border:1px solid var(--brd);border-radius:8px;font-size:14px;color:var(--g5);background:#fff;transition:border-color .15s}
+.fi:focus{border-color:var(--red)}
+.fi::placeholder{color:var(--g3)}
+textarea.fi{resize:vertical}
+select.fi{cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+
+/* ── TOGGLE BTNS ── */
+.tgroup{display:flex;gap:8px;flex-wrap:wrap}
+.tbtn{display:flex;align-items:center;gap:6px;padding:10px 16px;border-radius:8px;font-size:14px;color:var(--g5);border:1.5px solid var(--brd);background:#fff;cursor:pointer;transition:all .15s}
+.tbtn:hover{border-color:var(--red)}
+.tbtn.on{border-color:var(--red);color:var(--red);background:var(--red-l)}
+.beta-badge{background:#FEF3C7;color:#B45309;font-size:10px;font-weight:700;padding:1px 5px;border-radius:4px}
+
+/* ── WIZARD ── */
+.wiz{display:flex;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:0}
+.ws{display:flex;align-items:center;gap:7px;font-size:14px;color:var(--g3)}
+.wsn{width:28px;height:28px;border-radius:50%;background:var(--g2);color:var(--g3);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.ws.act .wsn{background:var(--red);color:#fff}
+.ws.act{color:var(--g5);font-weight:600}
+.ws.dn .wsn{background:var(--grn);color:#fff;font-size:12px}
+.ws.dn{color:var(--g3)}
+.warr{color:var(--g3);font-size:14px;margin:0 8px}
+
+/* ── CHECKBOX ── */
+.cbrow{display:flex;align-items:flex-start;gap:10px;margin-bottom:11px;cursor:pointer}
+.cbrow input[type=checkbox]{width:18px;height:18px;flex-shrink:0;accent-color:var(--red);margin-top:1px}
+.cblbl{font-size:14px;color:var(--g5)}
+.cbsub{font-size:12px;color:var(--g4);margin-top:1px}
+.div{height:1px;background:var(--brd);margin:16px 0}
+
+/* ── AGENCY BOOKING STEPS ── */
+.bsteps{display:flex;align-items:center;margin-bottom:24px}
+.bst{display:flex;align-items:center;gap:7px;font-size:14px;color:var(--g3)}
+.bstn{width:26px;height:26px;border-radius:50%;background:var(--g2);color:var(--g3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.bst.act .bstn{background:var(--red);color:#fff}
+.bst.act{color:var(--g5);font-weight:600}
+.bst.dn .bstn{background:var(--grn);color:#fff}
+.bst.dn{color:var(--g3)}
+.barr{color:var(--g3);font-size:14px;margin:0 10px}
+
+/* ── SLOT RADIO LIST ── */
+.srl{display:flex;flex-direction:column;gap:8px}
+.sri{display:flex;align-items:center;gap:12px;padding:13px 16px;border:1px solid var(--brd);border-radius:8px;cursor:pointer;background:#fff;transition:border-color .15s}
+.sri:hover{border-color:var(--red)}
+.sri input[type=radio]{accent-color:var(--red);width:16px;height:16px;cursor:pointer}
+.sri label{font-size:14px;color:var(--g5);cursor:pointer}
+
+/* ── AGENCY CARD ── */
+.ag-item{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border:1px solid var(--brd);border-radius:var(--r);background:#fff;box-shadow:var(--sh)}
+.ag-name{font-size:15px;font-weight:700;margin-bottom:2px}
+.ag-email{font-size:13px;color:var(--g4)}
+
+/* ── REVIEW TABLE ── */
+.rt{width:100%;border-collapse:collapse}
+.rt td{padding:11px 0;border-bottom:1px solid var(--brd);font-size:14px}
+.rt tr:last-child td{border-bottom:none}
+.rl{color:var(--g4);width:160px}
+.rv{color:var(--g5);text-align:right}
+
+/* ── URL COPY ── */
+.urlrow{display:flex;gap:8px}
+.urlinp{flex:1;padding:11px 14px;border:1px solid var(--brd);border-radius:8px;font-size:13px;color:var(--g5);background:var(--g1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.urlbtn{padding:11px 16px;background:var(--g1);border:1px solid var(--brd);border-radius:8px;font-size:14px;color:var(--g5);cursor:pointer;white-space:nowrap}
+.urlbtn:hover{background:var(--g2)}
+
+/* ── SUCCESS CENTER ── */
+.proj-created{display:flex;align-items:center;justify-content:center;min-height:400px}
+.proj-created-card{background:#fff;border:1px solid var(--brd);border-radius:var(--r);padding:40px;text-align:center;max-width:520px;width:100%;box-shadow:var(--sh)}
+.success-circle{width:64px;height:64px;background:var(--grn-l);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px;color:var(--grn-t)}
+
+/* ══════════════════════════════════════════
+   RESPONDENT BOOKING (public page)
+══════════════════════════════════════════ */
+#mode-booking{background:var(--g1);min-height:100vh}
+.bh{background:#fff;border-bottom:1px solid var(--brd);padding:14px 20px;display:flex;align-items:center;gap:10px}
+.bh-icon{width:32px;height:32px;background:var(--red);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:800;flex-shrink:0}
+.bh-title{font-size:15px;font-weight:600;color:var(--g5)}
+.bh-sub{font-size:13px;color:var(--g4)}
+.bcontent{max-width:560px;margin:0 auto;padding:24px 16px}
+.bsteps{display:flex;align-items:center;margin-bottom:22px}
+.bst2{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--g3)}
+.bstn2{width:26px;height:26px;border-radius:50%;background:var(--g2);color:var(--g3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.bst2.act .bstn2{background:var(--red);color:#fff}
+.bst2.act{color:var(--g5);font-weight:600}
+.bst2.dn .bstn2{background:var(--grn);color:#fff;font-size:11px}
+.barr2{color:var(--g3);font-size:12px;margin:0 8px}
+.bpcard{background:#fff;border:1px solid var(--brd);border-radius:var(--r);padding:24px;text-align:center;margin-bottom:14px;box-shadow:var(--sh)}
+.bpicon{width:52px;height:52px;background:var(--red-l);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 12px}
+.bpname{font-size:20px;font-weight:700;margin-bottom:10px}
+.bptags{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}
+.btag{padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500}
+.btag-p{background:#F3F4FF;color:#5B67FF}
+.btag-g{background:var(--grn-l);color:var(--grn-t)}
+.btag-gr{background:var(--g1);color:var(--g5)}
+.tcard{background:#fff;border:1px solid var(--brd);border-radius:var(--r);padding:20px;box-shadow:var(--sh)}
+.tdate{font-size:13px;color:var(--g4);margin-bottom:10px}
+.tgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px}
+.tbtn2{padding:11px 6px;border:1.5px solid var(--brd);border-radius:8px;text-align:center;font-size:14px;font-weight:500;color:var(--g5);cursor:pointer;background:#fff;transition:all .15s}
+.tbtn2:hover{border-color:var(--red);color:var(--red)}
+.tbtn2.on{border-color:var(--red);background:var(--red-l);color:var(--red)}
+.bsum{background:#fff;border:1px solid var(--brd);border-radius:var(--r);padding:14px 18px;margin-bottom:14px;font-size:14px}
+.bsrow{display:flex;justify-content:space-between;align-items:center}
+.bsrow+.bsrow{margin-top:6px}
+.bslbl{color:var(--g4)}.bsval{font-weight:600}
+.ritem{display:flex;align-items:center;gap:12px;padding:13px 16px;border:1.5px solid var(--brd);border-radius:8px;cursor:pointer;background:#fff;transition:border-color .15s;margin-bottom:8px}
+.ritem:hover{border-color:var(--red)}
+.ritem.on{border-color:var(--red);background:var(--red-l)}
+.ritem input[type=radio]{display:none}
+.rlbl{font-size:14px;color:var(--g5)}
+.bsuccess{background:#fff;border:1px solid var(--brd);border-radius:var(--r);padding:30px 22px;text-align:center;box-shadow:var(--sh)}
+.bsicon{width:64px;height:64px;background:var(--grn-l);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:28px;color:var(--grn-t)}
+.bstitle{font-size:24px;font-weight:700;margin-bottom:10px}
+.bssub{font-size:14px;color:var(--g4);line-height:1.6;margin-bottom:18px}
+.bstable{background:var(--g1);border-radius:8px;padding:14px 18px;text-align:left;margin-bottom:18px}
+.bstr{display:flex;justify-content:space-between;padding:6px 0;font-size:14px}
+.bstr+.bstr{border-top:1px solid var(--brd)}
+.bstl{color:var(--g4)}.bstv{font-weight:600}
+.bclink{font-size:13px;color:var(--g4);text-decoration:underline;cursor:pointer}
+
+/* ── SCREENS ── */
+.screen{display:none}
+.screen.on{display:block}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:60px 24px;color:var(--g3)}
+.empty-ic{font-size:40px;margin-bottom:10px}
+
+/* ── DEMO BAR ── */
+.dbar{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#1C1C1E;border-radius:100px;padding:5px;display:flex;gap:3px;z-index:9999;box-shadow:0 4px 24px rgba(0,0,0,.3)}
+.dmb{padding:7px 14px;border-radius:100px;font-size:12px;font-weight:600;color:rgba(255,255,255,.55);cursor:pointer;transition:all .15s}
+.dmb:hover{color:#fff}
+.dmb.on{background:#fff;color:#1C1C1E}
+.dlbl{color:rgba(255,255,255,.3);font-size:11px;padding:7px 8px;align-self:center}
+
+/* ── FLEX UTILS ── */
+.flex{display:flex}.ac{align-items:center}.jb{justify-content:space-between}.gap2{gap:8px}.gap3{gap:12px}.gap4{gap:16px}
+.fw6{font-weight:600}.fw7{font-weight:700}.ts{font-size:12px}.tm{color:var(--g4)}
+</style>
+</head>
+<body>
+
+<!-- ══ HOME / LANDING ══════════════════════════ -->
+<div id="mode-home" style="background:#F5F5F7;min-height:100vh">
+<style>
+.home-hero{background:var(--red);padding:24px 48px;display:flex;align-items:center;gap:14px}
+.home-logo-icon{width:44px;height:44px;background:rgba(255,255,255,.2);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:800;flex-shrink:0}
+.home-logo-text{font-size:20px;font-weight:700;color:#fff}
+.home-logo-sub{font-size:13px;color:rgba(255,255,255,.75)}
+.home-pilot{margin-left:auto;background:rgba(0,0,0,.2);color:rgba(255,255,255,.9);font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;letter-spacing:.3px}
+.home-body{max-width:920px;margin:0 auto;padding:48px 24px}
+.home-h1{font-size:36px;font-weight:800;color:#1C1C1E;letter-spacing:-.5px;margin-bottom:12px;line-height:1.15}
+.home-lead{font-size:17px;color:#6B7280;line-height:1.6;max-width:600px;margin-bottom:40px}
+.home-problem{background:#fff;border:1px solid #E5E7EB;border-radius:16px;padding:28px 32px;margin-bottom:32px;display:flex;gap:32px}
+.home-pr-block{flex:1}
+.home-pr-label{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:12px}
+.home-pr-label.bad{color:#9CA3AF}
+.home-pr-label.good{color:var(--red)}
+.home-pr-title{font-size:17px;font-weight:700;color:#1C1C1E;margin-bottom:10px}
+.home-pr-item{display:flex;align-items:flex-start;gap:8px;font-size:14px;color:#374151;margin-bottom:8px;line-height:1.4}
+.home-pr-item::before{content:"★";color:#1C1C1E;font-size:11px;flex-shrink:0;margin-top:3px}
+.home-divider{width:1px;background:#E5E7EB;flex-shrink:0}
+.home-section-title{font-size:13px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#9CA3AF;margin-bottom:16px}
+.home-roles{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px}
+.home-role-card{background:#fff;border:1px solid #E5E7EB;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:0}
+.home-role-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px;flex-shrink:0}
+.home-role-name{font-size:16px;font-weight:700;color:#1C1C1E;margin-bottom:6px}
+.home-role-desc{font-size:13px;color:#6B7280;line-height:1.5;margin-bottom:16px;flex:1}
+.home-role-feature{font-size:12px;color:#374151;margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.home-role-feature::before{content:"·";color:var(--red);font-weight:700}
+.home-role-btn{margin-top:16px;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s;border:1px solid transparent}
+.home-role-btn-r{background:var(--red);color:#fff}
+.home-role-btn-r:hover{opacity:.9}
+.home-role-btn-dk{background:#1C1C1E;color:#fff}
+.home-role-btn-dk:hover{opacity:.85}
+.home-role-btn-ol{background:#fff;border-color:#E5E7EB;color:#374151}
+.home-role-btn-ol:hover{background:#F5F5F7}
+.home-stats{display:flex;gap:0;background:#fff;border:1px solid #E5E7EB;border-radius:16px;overflow:hidden;margin-bottom:40px}
+.home-stat{flex:1;padding:22px 24px;text-align:center;border-right:1px solid #E5E7EB}
+.home-stat:last-child{border-right:none}
+.home-stat-n{font-size:28px;font-weight:800;color:var(--red);margin-bottom:4px}
+.home-stat-l{font-size:12px;color:#9CA3AF}
+.home-footer{text-align:center;font-size:13px;color:#9CA3AF;padding-bottom:80px}
+</style>
+
+<div class="home-hero">
+  <div class="home-logo-icon">YR</div>
+  <div>
+    <div class="home-logo-text">YaResearchScheduler</div>
+    <div class="home-logo-sub">Портал записи на исследования · Яндекс</div>
+  </div>
+  <div class="home-pilot">Pilot v1 · 2026</div>
+</div>
+
+<div class="home-body">
+  <div class="home-h1">Самозапись участников<br>на UX-исследования</div>
+  <div class="home-lead">Инструмент, который автоматизирует рутинные шаги рекрута: создание расписания, самозапись респондентов, напоминания и выбор вознаграждения.</div>
+
+  <!-- Problem / Solution -->
+  <div class="home-problem">
+    <div class="home-pr-block">
+      <div class="home-pr-label bad">Было</div>
+      <div class="home-pr-title">Координация вручную</div>
+      <div class="home-pr-item">Excel-таблицы с расписанием, которые устаревают за день</div>
+      <div class="home-pr-item">Данные участников в разных чатах и письмах</div>
+      <div class="home-pr-item">Ручная отправка напоминаний за час до сессии</div>
+      <div class="home-pr-item">Переписка с агентствами по каждому слоту отдельно</div>
+      <div class="home-pr-item">Двойные записи, накладки, отмены в последний момент</div>
+    </div>
+    <div class="home-divider"></div>
+    <div class="home-pr-block">
+      <div class="home-pr-label good">Стало</div>
+      <div class="home-pr-title">YaResearchScheduler</div>
+      <div class="home-pr-item">Публичная ссылка — участник сам выбирает время</div>
+      <div class="home-pr-item">Агентства записывают через отдельный интерфейс</div>
+      <div class="home-pr-item">Автонапоминания за 24ч и за 1ч со ссылкой Zoom</div>
+      <div class="home-pr-item">Все данные и статусы в одном месте</div>
+      <div class="home-pr-item">Защита от двойных записей на уровне БД</div>
+    </div>
+  </div>
+
+  <!-- Roles -->
+  <div class="home-section-title">Три роли в системе</div>
+  <div class="home-roles">
+    <div class="home-role-card">
+      <div class="home-role-icon" style="background:#FEF0ED">⚙️</div>
+      <div class="home-role-name">Исследователь</div>
+      <div class="home-role-desc">Создаёт проекты, настраивает слоты и вознаграждения, следит за записями.</div>
+      <div class="home-role-feature">5-шаговый визард создания проекта</div>
+      <div class="home-role-feature">Публичная ссылка на самозапись</div>
+      <div class="home-role-feature">Приглашения для агентств</div>
+      <div class="home-role-feature">Авторизация через Яндекс ID</div>
+      <button class="home-role-btn home-role-btn-r" onclick="setModeById('r')">Посмотреть демо →</button>
+    </div>
+    <div class="home-role-card">
+      <div class="home-role-icon" style="background:#F0F0F0">🏢</div>
+      <div class="home-role-name">Агентство</div>
+      <div class="home-role-desc">Записывает участников от своего имени — видит только проекты, к которым подключено.</div>
+      <div class="home-role-feature">Простой 3-шаговый флоу записи</div>
+      <div class="home-role-feature">Выбор слота из заданных</div>
+      <div class="home-role-feature">История своих записей</div>
+      <div class="home-role-feature">Вход по invite-ссылке</div>
+      <button class="home-role-btn home-role-btn-dk" onclick="setModeById('a')">Посмотреть демо →</button>
+    </div>
+    <div class="home-role-card">
+      <div class="home-role-icon" style="background:#DCFCE7">🙋</div>
+      <div class="home-role-name">Респондент</div>
+      <div class="home-role-desc">Получает ссылку, сам выбирает время и вознаграждение. Регистрация не нужна.</div>
+      <div class="home-role-feature">Выбор времени из сетки слотов</div>
+      <div class="home-role-feature">Выбор вознаграждения</div>
+      <div class="home-role-feature">Согласие ФЗ-152 при записи</div>
+      <div class="home-role-feature">Автонапоминания на email</div>
+      <button class="home-role-btn home-role-btn-ol" onclick="setModeById('b')">Посмотреть демо →</button>
+    </div>
+  </div>
+
+  <div class="home-footer">YaResearchScheduler · Яндекс · Pilot v1 · research-signup.ru</div>
+</div>
+</div>
+<!-- /HOME -->
+
+
+<!-- ══ RESEARCHER ══════════════════════════════ -->
+<div id="mode-r" style="display:none">
+<div class="layout">
+<aside class="rs">
+  <div class="rs-logo">
+    <div class="rs-icon">YR</div>
+    <div><div class="rs-txt">YaResearch<br>Scheduler</div></div>
+  </div>
+  <nav class="rn">
+    <div class="rni on" onclick="rGo('ap')">Все проекты</div>
+    <div class="rni" onclick="rGo('ag')">Агентства</div>
+    <div class="rni" onclick="rGo('ar')">Архив</div>
+    <div class="rni" onclick="rGo('inv')">Приглашения</div>
+  </nav>
+  <div class="r-create" onclick="rGo('c1')">+ Создать проект</div>
+  <div style="height:10px"></div>
+  <div class="r-user"><div class="r-uname">Alice</div><div class="r-urole">researcher</div></div>
+  <div class="r-logout">🚪 Выйти</div>
+</aside>
+<div class="lmain" id="rmain">
+
+<!-- Все проекты -->
+<div class="screen on content" id="rs-ap">
+  <div class="ph">
+    <div><div class="ptitle">Все проекты</div><div class="psub">Общая админка исследователей и рекрутёров</div></div>
+    <button class="btn btn-r" onclick="rGo('c1')">+ Создать проект</button>
+  </div>
+  <div class="stats">
+    <div class="sc"><div class="sn">2</div><div class="sl">Проектов</div></div>
+    <div class="sc"><div class="sn">2</div><div class="sl">Активных</div></div>
+    <div class="sc"><div class="sn">3</div><div class="sl">Записей</div></div>
+    <div class="sc"><div class="sn">0</div><div class="sl">Сессий сегодня</div></div>
+  </div>
+  <div class="pc">
+    <div class="pc-head"><div><div class="pc-name">UX-1984 — Исследование настроек приватности</div><div class="pc-type">Глубинное интервью</div></div><span class="badge-grn">Активный</span></div>
+    <div class="prog-wrap"><div class="prog-lbl">1/7</div><div class="prog"><div class="prog-fill" style="width:14.3%"></div></div></div>
+    <div class="pc-meta"><span>👥 Записано: 1</span><span>📅 Свободных: 6</span><span>💻 ПК</span><span class="pc-link">/book/rWTnEFiyaZGY...</span></div>
+    <div class="pc-actions">
+      <button class="btn btn-ol" style="padding:7px 12px;font-size:13px">Редактировать</button>
+      <button class="btn btn-gh" style="font-size:13px">Копировать ссылку</button>
+      <button class="btn btn-gh" style="font-size:13px">Пауза</button>
+      <button class="btn btn-gh" style="font-size:13px">Завершить</button>
+      <button class="btn btn-ghr mla" style="font-size:13px">Удалить</button>
+    </div>
+  </div>
+  <div class="pc">
+    <div class="pc-head"><div><div class="pc-name">UX-2001 — Юзабилити голосового ассистента</div><div class="pc-type">Юзабилити-тест</div></div><span class="badge-grn">Активный</span></div>
+    <div class="prog-wrap"><div class="prog-lbl">2/5</div><div class="prog"><div class="prog-fill" style="width:40%"></div></div></div>
+    <div class="pc-meta"><span>👥 Записано: 2</span><span>📅 Свободных: 3</span><span>💻 ПК</span><span class="pc-link">/book/-RLMykR9aDE9...</span></div>
+    <div class="pc-actions">
+      <button class="btn btn-ol" style="padding:7px 12px;font-size:13px">Редактировать</button>
+      <button class="btn btn-gh" style="font-size:13px">Копировать ссылку</button>
+      <button class="btn btn-gh" style="font-size:13px">Пауза</button>
+      <button class="btn btn-gh" style="font-size:13px">Завершить</button>
+      <button class="btn btn-ghr mla" style="font-size:13px">Удалить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Агентства -->
+<div class="screen content" id="rs-ag">
+  <div class="ptitle mb3">Агентства</div>
+  <div class="psub mb6">Партнёрские рекрутинговые агентства</div>
+  <div class="ag-item"><div><div class="ag-name">ManekiNeko Agency</div><div class="ag-email">alice.tomilova@gmail.com</div></div><span class="badge-act">Активно</span></div>
+</div>
+
+<!-- Архив -->
+<div class="screen content" id="rs-ar">
+  <div class="ptitle mb6">Архив</div>
+  <div class="empty"><div class="empty-ic">🗂️</div><div>Архивных проектов нет</div></div>
+</div>
+
+<!-- Приглашения -->
+<div class="screen content" id="rs-inv">
+  <div class="ph"><div class="ptitle">Приглашения</div><button class="btn btn-r">+ Пригласить рекрутера</button></div>
+  <div class="tabs" id="itabs">
+    <div class="tab on" onclick="invTab('r',this)">Рекрутеры</div>
+    <div class="tab" onclick="invTab('a',this)">Агентства</div>
+  </div>
+  <div id="it-r"><div class="card"><table class="dt">
+    <thead><tr><th>EMAIL</th><th>СОЗДАНО</th><th>ИСТЕКАЕТ</th><th>СТАТУС</th></tr></thead>
+    <tbody>
+      <tr><td>porcospino@yandex.ru</td><td>3 июн. 2026 г.</td><td>10 июн. 2026 г.</td><td style="color:var(--g3)">Использована</td></tr>
+      <tr><td>samareva.taisiya@yandex.ru</td><td>21 мая 2026 г.</td><td>28 мая 2026 г.</td><td style="color:var(--g3)">Использована</td></tr>
+      <tr><td>lykke@yandex-team.ru</td><td>21 мая 2026 г.</td><td>28 мая 2026 г.</td><td style="color:var(--g3)">Истекла</td></tr>
+      <tr><td>zizara@yandex.ru</td><td>20 мая 2026 г.</td><td>20 мая 2027 г.</td><td style="color:var(--g3)">Использована</td></tr>
+      <tr><td>research-signup@yandex.ru</td><td>20 мая 2026 г.</td><td>20 мая 2027 г.</td><td style="color:var(--g3)">Использована</td></tr>
+      <tr><td>ig0r-solodukhin@yandex.ru</td><td>20 мая 2026 г.</td><td>20 мая 2027 г.</td><td style="color:var(--g3)">Использована</td></tr>
+    </tbody>
+  </table></div></div>
+  <div id="it-a" style="display:none"><div class="ag-item"><div><div class="ag-name">ManekiNeko Agency</div><div class="ag-email">alice.tomilova@gmail.com</div></div><span class="badge-act">Активно</span></div></div>
+</div>
+
+<!-- Создание шаг 1 -->
+<div class="screen content narrow" id="rs-c1">
+  <div class="ptitle mb3">Создание проекта</div><div class="psub mb6">Настройте исследование за 5 шагов</div>
+  <div class="wiz mb6">
+    <div class="ws act"><div class="wsn">1</div>Основное</div><div class="warr">→</div>
+    <div class="ws"><div class="wsn">2</div>Слоты</div><div class="warr">→</div>
+    <div class="ws"><div class="wsn">3</div>Настройки</div><div class="warr">→</div>
+    <div class="ws"><div class="wsn">4</div>Доступ</div><div class="warr">→</div>
+    <div class="ws"><div class="wsn">5</div>Создать</div>
+  </div>
+  <div class="card cp mb4">
+    <div class="fg"><label class="flbl">Название проекта</label><input class="fi" value="Тестирование интерфейса Яндекс Карт"></div>
+    <div class="fg">
+      <label class="flbl">Тип исследования</label>
+      <div class="tgroup" id="tg1">
+        <button class="tbtn on">💻 Юзабилити-тест</button>
+        <button class="tbtn">🎤 Глубинное интервью</button>
+        <button class="tbtn">📓 Дневниковое <span class="beta-badge">beta</span></button>
+      </div>
+    </div>
+    <div class="fg"><label class="flbl">Описание для респондента</label><textarea class="fi" rows="3" placeholder="Расскажите участникам об исследовании..."></textarea></div>
+    <div class="flex gap3">
+      <div class="fg" style="flex:1"><label class="flbl">Длительность</label><select class="fi"><option>60 минут</option><option>30 минут</option><option>90 минут</option></select></div>
+      <div class="fg" style="flex:1"><label class="flbl">Макс. участников</label><input class="fi" value="10" type="number"></div>
+    </div>
+  </div>
+  <button class="btn-full" onclick="rGo('c2')">Далее →</button>
+</div>
+
+<!-- Создание шаг 2 -->
+<div class="screen content narrow" id="rs-c2">
+  <div class="ptitle mb3">Создание проекта</div><div class="psub mb6">Настройте исследование за 5 шагов</div>
+  <div class="wiz mb6">
+    <div class="ws dn"><div class="wsn">✓</div>Основное</div><div class="warr">→</div>
+    <div class="ws act"><div class="wsn">2</div>Слоты</div><div class="warr">→</div>
+    <div class="ws"><div class="wsn">3</div>Настройки</div><div class="warr">→</div>
+    <div class="ws"><div class="wsn">4</div>Доступ</div><div class="warr">→</div>
+    <div class="ws"><div class="wsn">5</div>Создать</div>
+  </div>
+  <div class="card cp mb4">
+    <div class="flex ac gap2 mb4"><span>📅</span><span class="fw6" style="font-size:15px">Слоты для записи</span></div>
+    <div class="tabs" id="stabs">
+      <div class="tab" onclick="slotTab('batch',this)">Сразу пачкой</div>
+      <div class="tab on" onclick="slotTab('one',this)">По одному</div>
+    </div>
+    <div id="st-batch" style="display:none">
+      <div class="flex gap3">
+        <div class="fg" style="flex:1"><label class="flbl">Дата с</label><input class="fi" type="date"></div>
+        <div class="fg" style="flex:1"><label class="flbl">Дата по</label><input class="fi" type="date"></div>
+      </div>
+      <div class="flex gap3">
+        <div class="fg" style="flex:1"><label class="flbl">Время с</label><input class="fi" type="time" value="09:00"></div>
+        <div class="fg" style="flex:1"><label class="flbl">Время по</label><input class="fi" type="time" value="18:00"></div>
+      </div>
+    </div>
+    <div id="st-one">
+      <div class="flex gap3 ac">
+        <div class="fg" style="flex:2"><label class="flbl">Дата</label><input class="fi" type="date" placeholder="dd.mm.yyyy"></div>
+        <div class="fg" style="flex:1"><label class="flbl">Время</label><input class="fi" type="time" value="10:00"></div>
+        <button class="btn btn-gh" style="margin-top:4px;color:var(--g3);white-space:nowrap">+ Добавить</button>
+      </div>
+      <div class="ts tm">Длительность 60 мин (из проекта)</div>
+    </div>
+  </div>
+  <div class="flex gap3"><button class="btn-gray" onclick="rGo('c1')">← Назад</button><button class="btn-full" onclick="rGo('c3')" style="flex:1">Далее →</button></div>
+</div>
+
+<!-- Создание шаг 3 -->
+<div class="screen content narrow" id="rs-c3">
+  <div class="ptitle mb3">Создание проекта</div><div class="psub mb6">Настройте исследование за 5 шагов</div>
+  <div class="wiz mb6">
+    <div class="ws dn"><div class="wsn">✓</div>Основное</div><div class="warr">→</div>
+    <div class="ws dn"><div class="wsn">✓</div>Слоты</div><div class="warr">→</div>
+    <div class="ws act"><div class="wsn">3</div>Настройки</div><div class="warr">→</div>
+    <div class="ws"><div class="wsn">4</div>Доступ</div><div class="warr">→</div>
+    <div class="ws"><div class="wsn">5</div>Создать</div>
+  </div>
+  <div class="card cp mb4">
+    <div class="fg"><label class="flbl">💻 Устройство участника</label><div class="tgroup" id="tg2"><button class="tbtn on">💻 ПК</button><button class="tbtn">📱 Смартфон</button><button class="tbtn">📟 Планшет</button></div></div>
+    <div class="fg"><label class="flbl">📹 Ссылка на Zoom</label><input class="fi" placeholder="https://zoom.us/j/..."></div>
+    <div class="cbrow"><input type="checkbox"><div><div class="cblbl">📋 Подписывать с респондентом NDA</div></div></div>
+    <div class="cbrow"><input type="checkbox" checked><div><div class="cblbl">🔔 Отправлять напоминания</div><div class="cbsub">Респондент получит напоминание за 1 час до встречи со ссылкой на Zoom</div></div></div>
+    <div class="div"></div>
+    <div class="flbl mb3">💰 Варианты вознаграждения<br><span style="font-size:12px;font-weight:400;color:var(--g4)">Респондент выберет один вариант при записи</span></div>
+    <div class="cbrow"><input type="checkbox" checked><div class="cblbl">На баланс телефона или кошелёк ЮМани (1 500 ₽)</div></div>
+    <div class="cbrow"><input type="checkbox" checked><div class="cblbl">Промокод Яндекс Плюс (на 3 месяца)</div></div>
+    <div class="cbrow"><input type="checkbox" checked><div class="cblbl">Промокод Яндекс Такси (1 800 ₽)</div></div>
+    <div class="cbrow"><input type="checkbox" checked><div class="cblbl">Промокод Яндекс Еда (1 500 ₽)</div></div>
+    <div class="cbrow"><input type="checkbox" checked><div class="cblbl">Сертификат Озон (1 500 ₽)</div></div>
+  </div>
+  <div class="flex gap3"><button class="btn-gray" onclick="rGo('c2')">← Назад</button><button class="btn-full" onclick="rGo('c4')" style="flex:1">Далее →</button></div>
+</div>
+
+<!-- Создание шаг 4 -->
+<div class="screen content narrow" id="rs-c4">
+  <div class="ptitle mb3">Создание проекта</div><div class="psub mb6">Настройте исследование за 5 шагов</div>
+  <div class="wiz mb6">
+    <div class="ws dn"><div class="wsn">✓</div>Основное</div><div class="warr">→</div>
+    <div class="ws dn"><div class="wsn">✓</div>Слоты</div><div class="warr">→</div>
+    <div class="ws dn"><div class="wsn">✓</div>Настройки</div><div class="warr">→</div>
+    <div class="ws act"><div class="wsn">4</div>Доступ</div><div class="warr">→</div>
+    <div class="ws"><div class="wsn">5</div>Создать</div>
+  </div>
+  <div class="card cp mb4">
+    <div style="font-size:16px;font-weight:700;margin-bottom:8px">Публичная ссылка</div>
+    <div class="ts tm mb3">После создания вы получите ссылку вида:</div>
+    <div style="font-family:monospace;font-size:14px;color:var(--g5);background:var(--g1);padding:10px 14px;border-radius:6px;margin-bottom:12px">/book/&lt;token&gt;</div>
+    <div style="font-size:14px;color:var(--g5);margin-bottom:20px">Её можно отправить напрямую респондентам или передать агентствам.</div>
+    <div class="fg"><label class="flbl">Агентство</label>
+      <select class="fi" style="max-width:400px">
+        <option>— Не подключено —</option>
+        <option selected>ManekiNeko Agency</option>
+        <option>+ Пригласить новое</option>
+      </select>
+    </div>
+  </div>
+  <div class="flex gap3"><button class="btn-gray" onclick="rGo('c3')">← Назад</button><button class="btn-full" onclick="rGo('c5')" style="flex:1">Далее →</button></div>
+</div>
+
+<!-- Создание шаг 5 -->
+<div class="screen content narrow" id="rs-c5">
+  <div class="ptitle mb3">Создание проекта</div><div class="psub mb6">Настройте исследование за 5 шагов</div>
+  <div class="wiz mb6">
+    <div class="ws dn"><div class="wsn">✓</div>Основное</div><div class="warr">→</div>
+    <div class="ws dn"><div class="wsn">✓</div>Слоты</div><div class="warr">→</div>
+    <div class="ws dn"><div class="wsn">✓</div>Настройки</div><div class="warr">→</div>
+    <div class="ws dn"><div class="wsn">✓</div>Доступ</div><div class="warr">→</div>
+    <div class="ws act"><div class="wsn">5</div>Создать</div>
+  </div>
+  <div class="card cp mb4">
+    <div style="font-size:16px;font-weight:700;margin-bottom:16px">Проверьте данные</div>
+    <table class="rt">
+      <tr><td class="rl">Название</td><td class="rv">UX-1984</td></tr>
+      <tr><td class="rl">Тип</td><td class="rv">🎤 Глубинное интервью</td></tr>
+      <tr><td class="rl">Длительность</td><td class="rv">60 мин</td></tr>
+      <tr><td class="rl">Макс. участников</td><td class="rv">10</td></tr>
+      <tr><td class="rl">Устройство</td><td class="rv">💻 ПК</td></tr>
+      <tr><td class="rl">Слотов</td><td class="rv">8 слотов на 1 день (10:00–18:00)</td></tr>
+      <tr><td class="rl">NDA</td><td class="rv">✗ Нет</td></tr>
+      <tr><td class="rl">Zoom</td><td class="rv" style="color:var(--g3)">⚠ Ссылка не указана</td></tr>
+      <tr><td class="rl">Напоминания</td><td class="rv">✓ 24ч + 1ч</td></tr>
+      <tr><td class="rl">Вознаграждений</td><td class="rv">5</td></tr>
+    </table>
+  </div>
+  <div class="flex gap3"><button class="btn-gray" onclick="rGo('c4')">← Назад</button><button class="btn-full" onclick="rGo('csuc')" style="flex:1">🚀 Создать проект</button></div>
+</div>
+
+<!-- Проект создан -->
+<div class="screen content" id="rs-csuc">
+  <div class="proj-created">
+    <div class="proj-created-card">
+      <div class="success-circle">✓</div>
+      <div style="font-size:24px;font-weight:700;margin-bottom:8px">Проект создан!</div>
+      <div class="ts tm mb6">Публичная ссылка для респондентов готова.</div>
+      <div class="card cp mb6" style="text-align:left">
+        <div class="fw6 mb3" style="font-size:14px">Ссылка на запись</div>
+        <div class="ts tm mb3">Отправьте эту ссылку респондентам — по ней они смогут выбрать время и записаться</div>
+        <div class="urlrow"><div class="urlinp">https://research-signup.ru/book/b7iGEhsm7LT</div><button class="urlbtn">Копировать</button></div>
+      </div>
+      <button class="btn btn-r" onclick="rGo('ap')">К списку проектов</button>
+    </div>
+  </div>
+</div>
+
+</div></div></div>
+<!-- /RESEARCHER -->
+
+
+<!-- ══ AGENCY ══════════════════════════════════ -->
+<div id="mode-a" style="display:none">
+<div class="layout">
+<aside class="as">
+  <div class="as-logo"><div class="as-title">Панель записи</div><div class="as-agency">ManekiNeko Agency</div></div>
+  <nav class="an">
+    <div class="ani on" onclick="aGo('pr')">📋 Проекты</div>
+    <div class="ani" onclick="aGo('nb1')">+ Новая запись</div>
+    <div class="ani" onclick="aGo('hi')">📁 История</div>
+  </nav>
+</aside>
+<div class="lmain" id="amain">
+
+<!-- Проекты агентства -->
+<div class="screen on content" id="as-pr">
+  <div class="ptitle mb3">Проекты</div>
+  <div class="psub mb6">Выберите проект, чтобы записать респондента</div>
+  <div style="font-size:11px;font-weight:700;letter-spacing:.8px;color:var(--g3);text-transform:uppercase;margin-bottom:12px">Активные</div>
+  <div class="card cp flex ac jb mb3">
+    <div><div class="flex ac gap2 mb2"><span class="fw7" style="font-size:16px">UX-1984</span><span class="badge-act">Активный</span></div><div class="ts tm">Исследование настроек приватности</div><div class="ts tm">Глубинное интервью · 60 мин</div></div>
+    <button class="btn btn-dk" onclick="aGo('nb1')">+ Записать</button>
+  </div>
+  <div class="card cp flex ac jb mb3">
+    <div><div class="flex ac gap2 mb2"><span class="fw7" style="font-size:16px">UX-2001</span><span class="badge-act">Активный</span></div><div class="ts tm">Юзабилити голосового ассистента</div><div class="ts tm">Юзабилити-тест · 30 мин</div></div>
+    <button class="btn btn-dk" onclick="aGo('nb1')">+ Записать</button>
+  </div>
+</div>
+
+<!-- Новая запись: шаг 1 -->
+<div class="screen content" id="as-nb1">
+  <div class="ptitle mb3">Новая запись</div>
+  <div class="psub mb6">Запишите респондента от имени агентства</div>
+  <div class="bsteps">
+    <div class="bst act"><div class="bstn">1</div>Слот</div><div class="barr">→</div>
+    <div class="bst"><div class="bstn">2</div>Данные</div><div class="barr">→</div>
+    <div class="bst"><div class="bstn">3</div>Готово</div>
+  </div>
+  <div class="card cp mb4" style="max-width:620px">
+    <div class="fg"><label class="flbl">Проект</label>
+      <select class="fi"><option>UX-2001 — Юзабилити голосового ассистента (30 мин)</option><option>UX-1984 — Исследование настроек приватности (60 мин)</option></select>
+    </div>
+    <div class="fg"><label class="flbl">Слот</label>
+      <div class="srl">
+        <div class="sri" onclick="pickSlot(this)"><input type="radio" name="asl"><label>15.06, 11:00</label></div>
+        <div class="sri" onclick="pickSlot(this)"><input type="radio" name="asl"><label>15.06, 14:30</label></div>
+        <div class="sri" onclick="pickSlot(this)"><input type="radio" name="asl"><label>15.06, 15:00</label></div>
+      </div>
+    </div>
+  </div>
+  <div style="max-width:620px"><button class="btn-full dis" id="anxt1" onclick="aGo('nb2')">Далее →</button></div>
+</div>
+
+<!-- Новая запись: шаг 2 -->
+<div class="screen content" id="as-nb2">
+  <div class="ptitle mb3">Новая запись</div>
+  <div class="psub mb6">Запишите респондента от имени агентства</div>
+  <div class="bsteps">
+    <div class="bst dn"><div class="bstn">✓</div>Слот</div><div class="barr">→</div>
+    <div class="bst act"><div class="bstn">2</div>Данные</div><div class="barr">→</div>
+    <div class="bst"><div class="bstn">3</div>Готово</div>
+  </div>
+  <div class="card cp mb4" style="max-width:620px">
+    <div class="fg"><label class="flbl">ФИО <span class="req">*</span></label><input class="fi" placeholder="Иванова Мария Александровна"></div>
+    <div class="fg"><label class="flbl">Email <span class="req">*</span></label><input class="fi" type="email" placeholder="example@mail.ru"></div>
+    <div class="fg"><label class="flbl">Телефон <span class="req">*</span></label><input class="fi" type="tel" placeholder="+7 (999) 000-00-00"></div>
+  </div>
+  <div style="max-width:620px"><button class="btn-full" onclick="aGo('nb3')">Далее →</button></div>
+</div>
+
+<!-- Новая запись: шаг 3 / готово -->
+<div class="screen content" id="as-nb3">
+  <div class="ptitle mb3">Новая запись</div>
+  <div class="psub mb6">Запишите респондента от имени агентства</div>
+  <div class="bsteps">
+    <div class="bst dn"><div class="bstn">✓</div>Слот</div><div class="barr">→</div>
+    <div class="bst dn"><div class="bstn">✓</div>Данные</div><div class="barr">→</div>
+    <div class="bst act"><div class="bstn">3</div>Готово</div>
+  </div>
+  <div style="max-width:480px">
+    <div class="card cp" style="text-align:center">
+      <div class="success-circle" style="width:52px;height:52px;font-size:22px">✓</div>
+      <div class="fw7" style="font-size:20px;margin-bottom:8px">Запись подтверждена!</div>
+      <div class="ts tm mb4">Иванова Мария Александровна записана на 15.06, 11:00 МСК</div>
+      <div style="background:var(--g1);border-radius:8px;padding:14px;text-align:left;margin-bottom:16px">
+        <div class="bstr"><span class="bstl">Проект</span><span class="bstv">UX-2001</span></div>
+        <div class="bstr"><span class="bstl">Время</span><span class="bstv">15.06, 11:00 МСК</span></div>
+        <div class="bstr"><span class="bstl">Агентство</span><span class="bstv">ManekiNeko Agency</span></div>
+      </div>
+      <button class="btn btn-dk" onclick="aGo('nb1')">Записать ещё</button>
+    </div>
+  </div>
+</div>
+
+<!-- История -->
+<div class="screen content" id="as-hi">
+  <div class="ptitle mb6">История записей</div>
+  <div class="card"><table class="dt">
+    <thead><tr><th>ФИО</th><th>Проект</th><th>Слот</th><th>Статус</th></tr></thead>
+    <tbody>
+      <tr><td>Иванова М.А.</td><td>UX-2001</td><td>12 июн · 10:00</td><td><span class="badge-act">Подтверждена</span></td></tr>
+      <tr><td>Петров К.В.</td><td>UX-1984</td><td>12 июн · 11:30</td><td><span class="badge-act">Подтверждена</span></td></tr>
+      <tr><td>Смирнова Е.О.</td><td>UX-1984</td><td>13 июн · 11:00</td><td><span class="badge-act">Подтверждена</span></td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+</div></div></div>
+<!-- /AGENCY -->
+
+
+<!-- ══ RESPONDENT BOOKING ══════════════════════ -->
+<div id="mode-b" style="display:none">
+<div class="bh">
+  <div class="bh-icon">YR</div>
+  <div><div class="bh-title">YaResearchScheduler · Яндекс</div></div>
+</div>
+<div class="bcontent">
+
+<!-- Step 1: время -->
+<div class="screen on" id="bs-1">
+  <div class="bsteps mb6">
+    <div class="bst2 act"><div class="bstn2">1</div>Время</div><div class="barr2">→</div>
+    <div class="bst2"><div class="bstn2">2</div>Вознаграждение</div><div class="barr2">→</div>
+    <div class="bst2"><div class="bstn2">3</div>Данные</div><div class="barr2">→</div>
+    <div class="bst2"><div class="bstn2">4</div>Готово</div>
+  </div>
+  <div class="bpcard">
+    <div class="bpicon">📋</div>
+    <div class="bpname">UX-1984</div>
+    <div class="bptags">
+      <span class="btag btag-p">🕐 60 мин</span>
+      <span class="btag btag-g">📹 Онлайн (Zoom)</span>
+      <span class="btag btag-gr">Устройство: ПК</span>
+    </div>
+  </div>
+  <div class="tcard">
+    <div style="font-size:16px;font-weight:700;margin-bottom:12px">Выберите удобное время</div>
+    <div class="tdate">13.06</div>
+    <div class="tgrid">
+      <button class="tbtn2" onclick="selTime(this,'13.06, 10:00')">10:00</button>
+      <button class="tbtn2" onclick="selTime(this,'13.06, 11:00')">11:00</button>
+      <button class="tbtn2" onclick="selTime(this,'13.06, 12:00')">12:00</button>
+      <button class="tbtn2" onclick="selTime(this,'13.06, 13:00')">13:00</button>
+      <button class="tbtn2" onclick="selTime(this,'13.06, 14:00')">14:00</button>
+      <button class="tbtn2" onclick="selTime(this,'13.06, 15:00')">15:00</button>
+      <button class="tbtn2" onclick="selTime(this,'13.06, 16:00')">16:00</button>
+      <button class="tbtn2" onclick="selTime(this,'13.06, 17:00')">17:00</button>
+      <button class="tbtn2" onclick="selTime(this,'13.06, 18:00')">18:00</button>
+    </div>
+    <button class="btn-full dis" id="bn1" onclick="bGo('2')">Далее →</button>
+  </div>
+</div>
+
+<!-- Step 2: вознаграждение -->
+<div class="screen" id="bs-2">
+  <div class="bsteps mb6">
+    <div class="bst2 dn"><div class="bstn2">✓</div>Время</div><div class="barr2">→</div>
+    <div class="bst2 act"><div class="bstn2">2</div>Вознаграждение</div><div class="barr2">→</div>
+    <div class="bst2"><div class="bstn2">3</div>Данные</div><div class="barr2">→</div>
+    <div class="bst2"><div class="bstn2">4</div>Готово</div>
+  </div>
+  <div class="bsum">
+    <div class="bsrow"><span class="bslbl">Выбранное время</span><span class="bsval" id="bts">🕐 13.06, 11:00 МСК</span></div>
+  </div>
+  <div class="card cp">
+    <div class="fw7" style="font-size:16px;margin-bottom:14px">Выберите вознаграждение</div>
+    <div class="ritem" onclick="selRew(this,'На баланс телефона или кошелёк ЮМани (1 500 ₽)')"><input type="radio" name="rew"><span>🎁</span><span class="rlbl">На баланс телефона или кошелёк ЮМани (1 500 ₽)</span></div>
+    <div class="ritem" onclick="selRew(this,'Промокод Яндекс Плюс (на 3 месяца)')"><input type="radio" name="rew"><span>🎁</span><span class="rlbl">Промокод Яндекс Плюс (на 3 месяца)</span></div>
+    <div class="ritem" onclick="selRew(this,'Промокод Яндекс Такси (1 800 ₽)')"><input type="radio" name="rew"><span>🎁</span><span class="rlbl">Промокод Яндекс Такси (1 800 ₽)</span></div>
+    <div class="ritem" onclick="selRew(this,'Промокод Яндекс Еда (1 500 ₽)')"><input type="radio" name="rew"><span>🎁</span><span class="rlbl">Промокод Яндекс Еда (1 500 ₽)</span></div>
+    <div class="ritem" onclick="selRew(this,'Сертификат Озон (1 500 ₽)')"><input type="radio" name="rew"><span>🎁</span><span class="rlbl">Сертификат Озон (1 500 ₽)</span></div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn-gray" onclick="bGo('1')" style="padding:12px 16px;font-size:14px">← Назад</button>
+      <button class="btn-full dis" id="bn2" onclick="bGo('3')" style="flex:1">Далее →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Step 3: данные -->
+<div class="screen" id="bs-3">
+  <div class="bsteps mb6">
+    <div class="bst2 dn"><div class="bstn2">✓</div>Время</div><div class="barr2">→</div>
+    <div class="bst2 dn"><div class="bstn2">✓</div>Вознаграждение</div><div class="barr2">→</div>
+    <div class="bst2 act"><div class="bstn2">3</div>Данные</div><div class="barr2">→</div>
+    <div class="bst2"><div class="bstn2">4</div>Готово</div>
+  </div>
+  <div class="bsum">
+    <div class="bsrow"><span class="bslbl">Время:</span><span class="bsval">13.06, 11:00 МСК</span></div>
+    <div class="bsrow"><span class="bslbl">Вознаграждение:</span><span class="bsval" id="brs">Промокод Яндекс Такси (1 800 ₽)</span></div>
+  </div>
+  <div class="card cp">
+    <div class="fw7" style="font-size:16px;margin-bottom:16px">Ваши данные</div>
+    <div class="fg"><label class="flbl">ФИО <span class="req">*</span></label><input class="fi" placeholder="Иванова Мария Александровна"></div>
+    <div class="fg"><label class="flbl">Email <span class="req">*</span></label><input class="fi" type="email" placeholder="example@mail.ru"></div>
+    <div class="fg"><label class="flbl">Телефон <span class="req">*</span></label><input class="fi" type="tel" placeholder="+7 (999) 000-00-00"></div>
+    <div class="fg"><label class="flbl">Логин в Telegram <span style="color:var(--g3);font-weight:400">(необязательно)</span></label><input class="fi" placeholder="@username"></div>
+    <div class="div"></div>
+    <div class="cbrow" style="margin-bottom:16px"><input type="checkbox" id="pd152"><div class="cblbl">Согласен(а) на обработку персональных данных в соответствии с ФЗ №152</div></div>
+    <div style="display:flex;gap:10px">
+      <button class="btn-gray" onclick="bGo('2')" style="padding:12px 16px;font-size:14px">←</button>
+      <button class="btn-full" onclick="bGo('4')" style="flex:1">Далее →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Step 4: готово -->
+<div class="screen" id="bs-4">
+  <div class="bsteps mb6">
+    <div class="bst2 dn"><div class="bstn2">✓</div>Время</div><div class="barr2">→</div>
+    <div class="bst2 dn"><div class="bstn2">✓</div>Вознаграждение</div><div class="barr2">→</div>
+    <div class="bst2 dn"><div class="bstn2">✓</div>Данные</div><div class="barr2">→</div>
+    <div class="bst2 act"><div class="bstn2">4</div>Готово</div>
+  </div>
+  <div class="bsuccess">
+    <div class="bsicon">✓</div>
+    <div class="bstitle">Вы записаны!</div>
+    <div class="bssub">Подтверждение отправлено на <b>zizara@yandex-team.ru</b>.<br>Ссылка на Zoom придёт в письме-напоминании за 1 час до встречи.</div>
+    <div class="bstable">
+      <div class="bstr"><span class="bstl">Исследование</span><span class="bstv">UX-1984</span></div>
+      <div class="bstr"><span class="bstl">Дата и время</span><span class="bstv">📅 13.06, 11:00 МСК</span></div>
+      <div class="bstr"><span class="bstl">Вознаграждение</span><span class="bstv">🎁 Промокод Яндекс Такси (1 800 ₽)</span></div>
+    </div>
+    <div class="ts tm" style="margin-bottom:10px">Не сможете участвовать — воспользуйтесь ссылкой отмены из письма.</div>
+    <a class="bclink">Отменить запись</a>
+  </div>
+</div>
+
+</div></div>
+<!-- /BOOKING -->
+
+
+<!-- ══ EMAIL PREVIEWS ══════════════════════════ -->
+<div id="mode-e" style="display:none;background:#F5F5F7;min-height:100vh;padding:32px 20px">
+<style>
+.email-wrap{max-width:680px;margin:0 auto}
+.email-tabs-row{display:flex;gap:10px;margin-bottom:20px}
+.etab{padding:8px 18px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;background:#fff;border:1px solid #E5E7EB;color:#6B7280;transition:all .15s}
+.etab:hover{border-color:#F04E37;color:#F04E37}
+.etab.on{background:#F04E37;color:#fff;border-color:#F04E37}
+.email-card{background:#fff;border:1px solid #E5E7EB;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.email-header{background:#F04E37;padding:24px 32px}
+.email-hname{font-size:22px;font-weight:700;color:#fff;margin-bottom:4px}
+.email-hsub{font-size:14px;color:rgba(255,255,255,.8)}
+.email-body{padding:28px 32px}
+.email-greeting{font-size:15px;color:#1C1C1E;margin-bottom:8px}
+.email-greeting b{font-weight:700}
+.email-intro{font-size:15px;color:#1C1C1E;margin-bottom:22px}
+.email-section-title{font-size:15px;font-weight:700;color:#1C1C1E;margin-bottom:10px}
+.email-block{background:#F5F5F7;border-radius:8px;padding:18px 20px;margin-bottom:20px}
+.email-row{font-size:14px;color:#1C1C1E;margin-bottom:10px;line-height:1.4}
+.email-row:last-child{margin-bottom:0}
+.email-row .el{color:#9CA3AF}
+.email-row .ev{font-weight:700}
+.email-prep-title{font-size:15px;font-weight:700;color:#1C1C1E;margin-bottom:12px}
+.email-prep-item{font-size:14px;color:#1C1C1E;margin-bottom:10px;padding-left:0}
+.email-prep-item a{color:#3B82F6;text-decoration:none}
+.email-cancel{font-size:14px;color:#9CA3AF;margin-top:20px;border-top:1px solid #F0F0F0;padding-top:16px}
+.email-cancel a{color:#9CA3AF;text-decoration:underline;text-underline-offset:2px}
+</style>
+<div class="email-wrap">
+  <div class="email-tabs-row">
+    <button class="etab on" onclick="emailTab('researcher',this)">Письмо исследователю</button>
+    <button class="etab" onclick="emailTab('respondent',this)">Письмо респонденту</button>
+  </div>
+
+  <!-- Письмо исследователю -->
+  <div id="em-researcher" class="email-card">
+    <div class="email-header">
+      <div class="email-hname">YaResearchScheduler</div>
+      <div class="email-hsub">Портал записи на исследования · Яндекс</div>
+    </div>
+    <div class="email-body">
+      <div class="email-greeting">Здравствуйте, <b>Alice</b>!</div>
+      <div class="email-intro">На ваше исследование записался новый участник.</div>
+      <div class="email-section-title">Сессия</div>
+      <div class="email-block">
+        <div class="email-row"><span class="el">Исследование:</span><span class="ev">UX-1984</span></div>
+        <div class="email-row"><span class="el">Дата и время:</span><span class="ev">13 июня 2026, 11:00 МСК</span></div>
+        <div class="email-row"><span class="el">Длительность:</span><span class="ev">60 мин</span></div>
+        <div class="email-row"><span class="el">Вознаграждение:</span><span class="ev">Промокод Яндекс Такси (1 800 ₽)</span></div>
+      </div>
+      <div class="email-section-title">Респондент</div>
+      <div class="email-block">
+        <div class="email-row"><span class="el">Имя:</span><span class="ev">Alisa Tomilova</span></div>
+        <div class="email-row"><span class="el">Email:</span><span class="ev">zizara@yandex-team.ru</span></div>
+        <div class="email-row"><span class="el">Телефон:</span><span class="ev">+7 (495) 322-23-23</span></div>
+        <div class="email-row"><span class="el">Устройство:</span><span class="ev">ПК</span></div>
+        <div class="email-row"><span class="el">Источник:</span><span class="ev">Самозапись</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Письмо респонденту -->
+  <div id="em-respondent" class="email-card" style="display:none">
+    <div class="email-header">
+      <div class="email-hname">YaResearchScheduler</div>
+      <div class="email-hsub">Портал записи на исследования · Яндекс</div>
+    </div>
+    <div class="email-body">
+      <div class="email-greeting">Здравствуйте, <b>Alisa Tomilova</b>!</div>
+      <div class="email-intro">Вы записаны на исследование. Все детали ниже.</div>
+      <div class="email-block">
+        <div class="email-row"><span class="el">Исследование:</span><span class="ev">UX-1984</span></div>
+        <div class="email-row"><span class="el">Дата и время:</span><span class="ev">13 июня 2026, 11:00 МСК</span></div>
+        <div class="email-row"><span class="el">Длительность:</span><span class="ev">60 мин</span></div>
+        <div class="email-row"><span class="el">Формат:</span><span class="ev">Онлайн (Zoom)</span></div>
+        <div class="email-row"><span class="el">Устройство:</span><span class="ev">ПК</span></div>
+        <div class="email-row"><span class="el">Вознаграждение:</span><span class="ev">Промокод Яндекс Такси (1 800 ₽)</span></div>
+      </div>
+      <div class="email-prep-title">Подготовьтесь к сессии:</div>
+      <div class="email-prep-item">Установите Zoom: <a href="#">zoom.us/download</a></div>
+      <div class="email-prep-item">Подготовьте микрофон и веб-камеру</div>
+      <div class="email-prep-item">Найдите тихое место без посторонних</div>
+      <div class="email-prep-item">Подключитесь за 2–3 минуты до начала</div>
+      <div class="email-cancel"><a href="#">Не сможете участвовать? Отменить запись →</a></div>
+    </div>
+  </div>
+</div>
+</div>
+<!-- /EMAIL -->
+
+
+<!-- DEMO BAR -->
+<div class="dbar">
+  <span class="dlbl">Demo:</span>
+  <button class="dmb on" onclick="setMode('home',this)">О продукте</button>
+  <button class="dmb" onclick="setMode('r',this)">Исследователь</button>
+  <button class="dmb" onclick="setMode('a',this)">Агентство</button>
+  <button class="dmb" onclick="setMode('b',this)">Респондент</button>
+  <button class="dmb" onclick="setMode('e',this)">Письма</button>
+</div>
+
+<script>
+function setMode(m,btn){
+  ['home','r','a','b','e'].forEach(id=>{
+    const el=document.getElementById('mode-'+id);
+    if(el)el.style.display=m===id?'':'none';
+  });
+  document.querySelectorAll('.dmb').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+}
+function setModeById(m){
+  const btns=document.querySelectorAll('.dmb');
+  const map={home:0,r:1,a:2,b:3,e:4};
+  setMode(m, btns[map[m]]);
+}
+function rGo(id){
+  document.querySelectorAll('#mode-r .screen').forEach(s=>s.classList.remove('on'));
+  const el=document.getElementById('rs-'+id);
+  if(el){el.classList.add('on');document.getElementById('rmain').scrollTop=0;}
+  const map={ap:0,c1:0,c2:0,c3:0,c4:0,c5:0,csuc:0,ag:1,ar:2,inv:3};
+  document.querySelectorAll('.rni').forEach(n=>n.classList.remove('on'));
+  const items=document.querySelectorAll('.rni');
+  if(map[id]!==undefined&&items[map[id]])items[map[id]].classList.add('on');
+}
+function aGo(id){
+  document.querySelectorAll('#mode-a .screen').forEach(s=>s.classList.remove('on'));
+  const el=document.getElementById('as-'+id);
+  if(el){el.classList.add('on');document.getElementById('amain').scrollTop=0;}
+  const map={pr:0,nb1:1,nb2:1,nb3:1,hi:2};
+  document.querySelectorAll('.ani').forEach(n=>n.classList.remove('on'));
+  const items=document.querySelectorAll('.ani');
+  if(map[id]!==undefined&&items[map[id]])items[map[id]].classList.add('on');
+}
+function bGo(s){
+  document.querySelectorAll('#mode-b .screen').forEach(x=>x.classList.remove('on'));
+  const el=document.getElementById('bs-'+s);
+  if(el)el.classList.add('on');
+}
+function invTab(t,el){
+  document.querySelectorAll('#itabs .tab').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('it-r').style.display=t==='r'?'':'none';
+  document.getElementById('it-a').style.display=t==='a'?'':'none';
+}
+function slotTab(t,el){
+  document.querySelectorAll('#stabs .tab').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('st-batch').style.display=t==='batch'?'':'none';
+  document.getElementById('st-one').style.display=t==='one'?'':'none';
+}
+function selTime(el,lbl){
+  document.querySelectorAll('.tbtn2').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('bts').textContent='🕐 '+lbl+' МСК';
+  document.getElementById('bn1').classList.remove('dis');
+}
+function selRew(el,lbl){
+  document.querySelectorAll('.ritem').forEach(r=>r.classList.remove('on'));
+  el.classList.add('on');
+  el.querySelector('input').checked=true;
+  document.getElementById('brs').textContent=lbl;
+  document.getElementById('bn2').classList.remove('dis');
+}
+function pickSlot(el){
+  el.querySelector('input').checked=true;
+  const btn=document.getElementById('anxt1');
+  if(btn)btn.classList.remove('dis');
+}
+function emailTab(t,el){
+  document.querySelectorAll('.etab').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('em-researcher').style.display=t==='researcher'?'':'none';
+  document.getElementById('em-respondent').style.display=t==='respondent'?'':'none';
+}
+// Toggle groups
+document.querySelectorAll('.tgroup').forEach(g=>{
+  g.querySelectorAll('.tbtn').forEach(b=>{
+    b.addEventListener('click',()=>{
+      g.querySelectorAll('.tbtn').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');
+    });
+  });
+});
+</script>
+</body>
+</html>
