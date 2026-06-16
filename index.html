@@ -248,6 +248,16 @@ select.fi{cursor:pointer;-webkit-appearance:none;appearance:none;background-imag
 .dmb.on{background:#fff;color:#1C1C1E}
 .dlbl{color:rgba(255,255,255,.3);font-size:11px;padding:7px 8px;align-self:center}
 
+/* ── ГЛОБАЛЬНАЯ НАВИГАЦИЯ В ШАПКЕ ── */
+.topnav{position:fixed;top:0;left:0;right:0;height:56px;background:#1C1C1E;display:flex;align-items:center;gap:14px;padding:0 24px;z-index:9999}
+.topnav-logo-icon{width:32px;height:32px;background:var(--red);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:800;flex-shrink:0}
+.topnav-logo-text{font-size:15px;font-weight:700;color:#fff;white-space:nowrap}
+.topnav-links{display:flex;align-items:center;gap:2px;margin-left:18px}
+.topnav-link{padding:8px 14px;border-radius:8px;font-size:14px;font-weight:500;color:rgba(255,255,255,.6);cursor:pointer;transition:all .15s;white-space:nowrap}
+.topnav-link:hover{color:#fff;background:rgba(255,255,255,.08)}
+.topnav-link.on{color:#fff;background:rgba(255,255,255,.14)}
+.topnav-pilot{margin-left:auto;background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;letter-spacing:.3px;white-space:nowrap}
+
 /* ── FLEX UTILS ── */
 .flex{display:flex}.ac{align-items:center}.jb{justify-content:space-between}.gap2{gap:8px}.gap3{gap:12px}.gap4{gap:16px}
 .fw6{font-weight:600}.fw7{font-weight:700}.ts{font-size:12px}.tm{color:var(--g4)}
@@ -255,14 +265,32 @@ select.fi{cursor:pointer;-webkit-appearance:none;appearance:none;background-imag
 </head>
 <body>
 
+<!-- ══ ГЛОБАЛЬНАЯ НАВИГАЦИЯ ══ -->
+<div class="topnav">
+  <div class="topnav-logo-icon">YR</div>
+  <div class="topnav-logo-text">YaResearchScheduler</div>
+  <nav class="topnav-links">
+    <div class="topnav-link on" data-mode="home" onclick="setModeById('home')">О продукте</div>
+    <div class="topnav-link" data-mode="r" onclick="setModeById('r')">Исследователь</div>
+    <div class="topnav-link" data-mode="a" onclick="setModeById('a')">Агентство</div>
+    <div class="topnav-link" data-mode="b" onclick="setModeById('b')">Респондент</div>
+    <div class="topnav-link" data-mode="e" onclick="setModeById('e')">Письма</div>
+  </nav>
+  <div class="topnav-pilot">Pilot v1 · 2026</div>
+</div>
+<div style="height:56px"></div>
+
 <!-- ══ HOME / LANDING ══════════════════════════ -->
 <div id="mode-home" style="background:#F5F5F7;min-height:100vh">
 <style>
-.home-hero{background:var(--red);padding:24px 48px;display:flex;align-items:center;gap:14px}
-.home-logo-icon{width:44px;height:44px;background:rgba(255,255,255,.2);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:800;flex-shrink:0}
-.home-logo-text{font-size:20px;font-weight:700;color:#fff}
-.home-logo-sub{font-size:13px;color:rgba(255,255,255,.75)}
-.home-pilot{margin-left:auto;background:rgba(0,0,0,.2);color:rgba(255,255,255,.9);font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;letter-spacing:.3px}
+.home-hero{background:#1C1C1E;padding:0 32px;display:flex;align-items:center;gap:24px;height:60px}
+.home-logo-icon{width:34px;height:34px;background:var(--red);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:800;flex-shrink:0}
+.home-logo-text{font-size:16px;font-weight:700;color:#fff}
+.home-nav{display:flex;align-items:center;gap:4px;margin-left:18px}
+.home-navlink{padding:8px 14px;border-radius:8px;font-size:14px;font-weight:500;color:rgba(255,255,255,.6);cursor:pointer;transition:all .15s}
+.home-navlink:hover{color:#fff;background:rgba(255,255,255,.08)}
+.home-navlink.on{color:#fff;background:rgba(255,255,255,.14)}
+.home-pilot{margin-left:auto;background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;letter-spacing:.3px}
 .home-body{max-width:920px;margin:0 auto;padding:48px 24px}
 .home-h1{font-size:36px;font-weight:800;color:#1C1C1E;letter-spacing:-.5px;margin-bottom:12px;line-height:1.15}
 .home-lead{font-size:17px;color:#6B7280;line-height:1.6;max-width:600px;margin-bottom:40px}
@@ -270,10 +298,10 @@ select.fi{cursor:pointer;-webkit-appearance:none;appearance:none;background-imag
 .home-pr-block{flex:1}
 .home-pr-label{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:12px}
 .home-pr-label.bad{color:#9CA3AF}
-.home-pr-label.good{color:var(--red)}
+.home-pr-label.good{color:var(--grn-t)}
 .home-pr-title{font-size:17px;font-weight:700;color:#1C1C1E;margin-bottom:10px}
 .home-pr-item{display:flex;align-items:flex-start;gap:8px;font-size:14px;color:#374151;margin-bottom:8px;line-height:1.4}
-.home-pr-item::before{content:"★";color:#1C1C1E;font-size:11px;flex-shrink:0;margin-top:3px}
+.home-pr-item::before{content:"";width:5px;height:5px;border-radius:50%;background:#9CA3AF;flex-shrink:0;margin-top:7px}
 .home-divider{width:1px;background:#E5E7EB;flex-shrink:0}
 .home-section-title{font-size:13px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#9CA3AF;margin-bottom:16px}
 .home-roles{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px}
@@ -297,15 +325,6 @@ select.fi{cursor:pointer;-webkit-appearance:none;appearance:none;background-imag
 .home-stat-l{font-size:12px;color:#9CA3AF}
 .home-footer{text-align:center;font-size:13px;color:#9CA3AF;padding-bottom:80px}
 </style>
-
-<div class="home-hero">
-  <div class="home-logo-icon">YR</div>
-  <div>
-    <div class="home-logo-text">YaResearchScheduler</div>
-    <div class="home-logo-sub">Портал записи на исследования · Яндекс</div>
-  </div>
-  <div class="home-pilot">Pilot v1 · 2026</div>
-</div>
 
 <div class="home-body">
   <div class="home-h1">Самозапись участников<br>на UX-исследования</div>
@@ -958,30 +977,18 @@ select.fi{cursor:pointer;-webkit-appearance:none;appearance:none;background-imag
 <!-- /EMAIL -->
 
 
-<!-- DEMO BAR -->
-<div class="dbar">
-  <span class="dlbl">Demo:</span>
-  <button class="dmb on" onclick="setMode('home',this)">О продукте</button>
-  <button class="dmb" onclick="setMode('r',this)">Исследователь</button>
-  <button class="dmb" onclick="setMode('a',this)">Агентство</button>
-  <button class="dmb" onclick="setMode('b',this)">Респондент</button>
-  <button class="dmb" onclick="setMode('e',this)">Письма</button>
-</div>
-
 <script>
-function setMode(m,btn){
+function setMode(m){
   ['home','r','a','b','e'].forEach(id=>{
     const el=document.getElementById('mode-'+id);
     if(el)el.style.display=m===id?'':'none';
   });
-  document.querySelectorAll('.dmb').forEach(b=>b.classList.remove('on'));
-  if(btn)btn.classList.add('on');
+  document.querySelectorAll('.topnav-link').forEach(l=>{
+    l.classList.toggle('on', l.getAttribute('data-mode')===m);
+  });
+  window.scrollTo(0,0);
 }
-function setModeById(m){
-  const btns=document.querySelectorAll('.dmb');
-  const map={home:0,r:1,a:2,b:3,e:4};
-  setMode(m, btns[map[m]]);
-}
+function setModeById(m){ setMode(m); }
 function rGo(id){
   document.querySelectorAll('#mode-r .screen').forEach(s=>s.classList.remove('on'));
   const el=document.getElementById('rs-'+id);
