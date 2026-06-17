@@ -348,8 +348,8 @@ select.fi{cursor:pointer;-webkit-appearance:none;appearance:none;background-imag
   <div class="home-lead">Инструмент, который автоматизирует рутинные шаги рекрута: создание расписания, самозапись респондентов, напоминания и выбор вознаграждения.</div>
 
   <!-- Контекст: что такое рекрут -->
-  <div class="home-section-title">Вводные</div>
   <div class="ctx-block">
+    <div class="flow-title" style="margin-bottom:16px">Вводные</div>
     <div class="ctx-lead">Чтобы провести UX-исследование, нужно найти и записать на сессии живых людей — респондентов, подходящих под критерии проекта. Этим занимается рекрутер: договаривается о времени, собирает контакты, ведёт переписку, напоминает, согласовывает вознаграждение.</div>
     <div class="ctx-lead">Часть респондентов рекрутер ищет сам, часть — приводят внешние агентства. И всё это сегодня держится на ручной координации в куче разных мест.</div>
   </div>
@@ -363,32 +363,24 @@ select.fi{cursor:pointer;-webkit-appearance:none;appearance:none;background-imag
     <div class="flow-sub">Один рекрутер вручную сшивает пять разных каналов на каждого респондента</div>
     <div class="flow-svg-wrap">
       <svg viewBox="0 0 820 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;min-width:720px">
-        <defs>
-          <marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
-            <path d="M0,0 L8,4 L0,8 Z" fill="#CBD5E1"/>
-          </marker>
-          <marker id="ah2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
-            <path d="M0,0 L8,4 L0,8 Z" fill="#F0A8A0"/>
-          </marker>
-        </defs>
 
-        <!-- связи рекрутер → узлы -->
-        <g fill="none" stroke="#E2E8F0" stroke-width="1.5">
-          <path d="M 410 190 C 280 110, 220 95, 180 100" marker-end="url(#ah)"/>
-          <path d="M 410 190 C 410 110, 410 95, 410 88" marker-end="url(#ah)"/>
-          <path d="M 410 190 C 540 110, 600 95, 640 100" marker-end="url(#ah)"/>
-          <path d="M 410 190 C 280 270, 220 285, 180 290" marker-end="url(#ah)"/>
-          <path d="M 410 190 C 410 270, 410 285, 410 292" marker-end="url(#ah)"/>
-          <path d="M 410 190 C 540 270, 600 285, 640 290" marker-end="url(#ah)"/>
+        <!-- связи рекрутер → узлы (сплошные серые, от краёв чёрного блока) -->
+        <g fill="none" stroke="#D8DEE6" stroke-width="1.5">
+          <path d="M 355 178 C 290 150, 240 120, 195 114"/>
+          <path d="M 400 165 C 395 140, 410 120, 410 102"/>
+          <path d="M 465 178 C 540 150, 595 120, 635 114"/>
+          <path d="M 355 202 C 290 240, 240 270, 200 280"/>
+          <path d="M 410 215 C 410 245, 410 265, 410 278"/>
+          <path d="M 465 202 C 545 240, 600 270, 640 282"/>
         </g>
-        <!-- хаотичные перекрёстные связи -->
-        <g fill="none" stroke="#F0A8A0" stroke-width="1.5" stroke-dasharray="4 4">
-          <path d="M 180 110 C 300 150, 250 260, 175 295" marker-end="url(#ah2)"/>
-          <path d="M 640 110 C 540 160, 560 260, 645 295" marker-end="url(#ah2)"/>
-          <path d="M 410 100 C 560 130, 620 110, 645 105" marker-end="url(#ah2)"/>
-          <path d="M 180 295 C 300 280, 360 295, 405 300" marker-end="url(#ah2)"/>
-          <path d="M 645 300 C 540 290, 480 300, 415 302" marker-end="url(#ah2)"/>
-          <path d="M 180 105 C 350 120, 480 100, 640 102" marker-end="url(#ah2)"/>
+        <!-- хаотичные перекрёстные связи (красный пунктир, узел↔узел) -->
+        <g fill="none" stroke="#F0A8A0" stroke-width="1.5" stroke-dasharray="5 5">
+          <path d="M 260 95 C 360 105, 460 105, 560 100"/>
+          <path d="M 260 100 C 340 150, 320 240, 245 266"/>
+          <path d="M 640 114 C 660 170, 660 230, 648 266"/>
+          <path d="M 260 304 C 320 315, 360 312, 340 308"/>
+          <path d="M 480 304 C 540 312, 580 308, 570 300"/>
+          <path d="M 560 92 C 480 130, 380 95, 460 88"/>
         </g>
 
         <!-- центр: рекрутер -->
