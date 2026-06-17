@@ -324,13 +324,115 @@ select.fi{cursor:pointer;-webkit-appearance:none;appearance:none;background-imag
 .home-stat-n{font-size:28px;font-weight:800;color:var(--red);margin-bottom:4px}
 .home-stat-l{font-size:12px;color:#9CA3AF}
 .home-footer{text-align:center;font-size:13px;color:#9CA3AF;padding-bottom:80px}
+
+/* ── КОНТЕКСТ: что такое рекрут ── */
+.ctx-block{background:#fff;border:1px solid #E5E7EB;border-radius:16px;padding:28px 32px;margin-bottom:24px}
+.ctx-lead{font-size:15px;color:#374151;line-height:1.6}
+.ctx-lead+.ctx-lead{margin-top:14px}
+
+/* ── ГРАФ «КАК СЕЙЧАС» ── */
+.flow-block{background:#fff;border:1px solid #E5E7EB;border-radius:16px;padding:28px 32px;margin-bottom:32px}
+.flow-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.flow-title{font-size:17px;font-weight:700;color:#1C1C1E}
+.flow-chaos-tag{font-size:11px;font-weight:700;color:#B45309;background:#FEF3C7;padding:3px 9px;border-radius:20px;letter-spacing:.3px}
+.flow-sub{font-size:13px;color:#9CA3AF;margin-bottom:22px}
+.flow-svg-wrap{width:100%;overflow-x:auto}
+.flow-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:18px;padding-top:18px;border-top:1px solid #F0F0F0}
+.flow-leg-item{display:flex;align-items:center;gap:7px;font-size:12px;color:#6B7280}
+.flow-leg-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.flow-pain{margin-top:16px;font-size:13px;color:#991B1B;background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:11px 14px;line-height:1.5}
 </style>
 
 <div class="home-body">
   <div class="home-h1">Самозапись участников<br>на UX-исследования</div>
   <div class="home-lead">Инструмент, который автоматизирует рутинные шаги рекрута: создание расписания, самозапись респондентов, напоминания и выбор вознаграждения.</div>
 
+  <!-- Контекст: что такое рекрут -->
+  <div class="home-section-title">Вводные</div>
+  <div class="ctx-block">
+    <div class="ctx-lead">Чтобы провести UX-исследование, нужно найти и записать на сессии живых людей — респондентов, подходящих под критерии проекта. Этим занимается рекрутер: договаривается о времени, собирает контакты, ведёт переписку, напоминает, согласовывает вознаграждение.</div>
+    <div class="ctx-lead">Часть респондентов рекрутер ищет сам, часть — приводят внешние агентства. И всё это сегодня держится на ручной координации в куче разных мест.</div>
+  </div>
+
+  <!-- Граф «как сейчас» -->
+  <div class="flow-block">
+    <div class="flow-head">
+      <div class="flow-title">Как подбор устроен сейчас</div>
+      <span class="flow-chaos-tag">всё вручную</span>
+    </div>
+    <div class="flow-sub">Один рекрутер вручную сшивает пять разных каналов на каждого респондента</div>
+    <div class="flow-svg-wrap">
+      <svg viewBox="0 0 820 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;min-width:720px">
+        <defs>
+          <marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 Z" fill="#CBD5E1"/>
+          </marker>
+          <marker id="ah2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 Z" fill="#F0A8A0"/>
+          </marker>
+        </defs>
+
+        <!-- связи рекрутер → узлы -->
+        <g fill="none" stroke="#E2E8F0" stroke-width="1.5">
+          <path d="M 410 190 C 280 110, 220 95, 180 100" marker-end="url(#ah)"/>
+          <path d="M 410 190 C 410 110, 410 95, 410 88" marker-end="url(#ah)"/>
+          <path d="M 410 190 C 540 110, 600 95, 640 100" marker-end="url(#ah)"/>
+          <path d="M 410 190 C 280 270, 220 285, 180 290" marker-end="url(#ah)"/>
+          <path d="M 410 190 C 410 270, 410 285, 410 292" marker-end="url(#ah)"/>
+          <path d="M 410 190 C 540 270, 600 285, 640 290" marker-end="url(#ah)"/>
+        </g>
+        <!-- хаотичные перекрёстные связи -->
+        <g fill="none" stroke="#F0A8A0" stroke-width="1.5" stroke-dasharray="4 4">
+          <path d="M 180 110 C 300 150, 250 260, 175 295" marker-end="url(#ah2)"/>
+          <path d="M 640 110 C 540 160, 560 260, 645 295" marker-end="url(#ah2)"/>
+          <path d="M 410 100 C 560 130, 620 110, 645 105" marker-end="url(#ah2)"/>
+          <path d="M 180 295 C 300 280, 360 295, 405 300" marker-end="url(#ah2)"/>
+          <path d="M 645 300 C 540 290, 480 300, 415 302" marker-end="url(#ah2)"/>
+          <path d="M 180 105 C 350 120, 480 100, 640 102" marker-end="url(#ah2)"/>
+        </g>
+
+        <!-- центр: рекрутер -->
+        <g>
+          <rect x="350" y="165" width="120" height="50" rx="12" fill="#1C1C1E"/>
+          <text x="410" y="195" text-anchor="middle" fill="#fff" font-size="14" font-weight="700" font-family="sans-serif">Рекрутер</text>
+        </g>
+
+        <!-- узлы инструментов -->
+        <g font-family="sans-serif">
+          <!-- Excel (верх-лево) -->
+          <rect x="100" y="56" width="160" height="58" rx="10" fill="#F0FDF4" stroke="#BBF7D0"/>
+          <text x="180" y="78" text-anchor="middle" font-size="13" font-weight="600" fill="#15803D">Excel</text>
+          <text x="180" y="94" text-anchor="middle" font-size="10" fill="#16A34A">расписание, вознаграждение,</text>
+          <text x="180" y="106" text-anchor="middle" font-size="10" fill="#16A34A">перс. данные</text>
+          <!-- Почта (верх-центр) -->
+          <rect x="340" y="50" width="140" height="52" rx="10" fill="#EFF6FF" stroke="#BFDBFE"/>
+          <text x="410" y="72" text-anchor="middle" font-size="13" font-weight="600" fill="#1D4ED8">Почта</text>
+          <text x="410" y="89" text-anchor="middle" font-size="10" fill="#3B82F6">приглашения</text>
+          <!-- Стафф (верх-право) -->
+          <rect x="570" y="62" width="140" height="52" rx="10" fill="#FDF2F8" stroke="#FBCFE8"/>
+          <text x="640" y="84" text-anchor="middle" font-size="13" font-weight="600" fill="#BE185D">Стафф</text>
+          <text x="640" y="101" text-anchor="middle" font-size="10" fill="#DB2777">слоты</text>
+          <!-- Мессенджеры (низ-лево) -->
+          <rect x="100" y="266" width="160" height="58" rx="10" fill="#F5F3FF" stroke="#DDD6FE"/>
+          <text x="180" y="288" text-anchor="middle" font-size="13" font-weight="600" fill="#6D28D9">Мессенджеры</text>
+          <text x="180" y="304" text-anchor="middle" font-size="10" fill="#8B5CF6">переписка, контакты,</text>
+          <text x="180" y="316" text-anchor="middle" font-size="10" fill="#8B5CF6">напоминания</text>
+          <!-- Календарь (низ-центр) -->
+          <rect x="340" y="278" width="140" height="52" rx="10" fill="#FFF7ED" stroke="#FED7AA"/>
+          <text x="410" y="300" text-anchor="middle" font-size="13" font-weight="600" fill="#C2410C">Календарь</text>
+          <text x="410" y="317" text-anchor="middle" font-size="10" fill="#EA580C">встречи</text>
+          <!-- Звонки (низ-право) -->
+          <rect x="570" y="266" width="150" height="52" rx="10" fill="#FEF2F2" stroke="#FECACA"/>
+          <text x="645" y="288" text-anchor="middle" font-size="13" font-weight="600" fill="#B91C1C">Звонки</text>
+          <text x="645" y="305" text-anchor="middle" font-size="10" fill="#EF4444">агентства, подтверждения</text>
+        </g>
+      </svg>
+    </div>
+    <div class="flow-pain">Данные разбросаны, ничего не синхронизировано: легко потерять контакт, забыть напоминание или записать двух человек на один слот.</div>
+  </div>
+
   <!-- Problem / Solution -->
+  <div class="home-section-title">Что меняется</div>
   <div class="home-problem">
     <div class="home-pr-block">
       <div class="home-pr-label bad">Было</div>
@@ -349,7 +451,7 @@ select.fi{cursor:pointer;-webkit-appearance:none;appearance:none;background-imag
       <div class="home-pr-item">Агентства записывают через отдельный интерфейс</div>
       <div class="home-pr-item">Автонапоминания за 24ч и за 1ч со ссылкой Zoom</div>
       <div class="home-pr-item">Все данные и статусы в одном месте</div>
-      <div class="home-pr-item">Защита от двойных записей на уровне БД</div>
+      <div class="home-pr-item">Один слот — один человек: система не даст записать двоих</div>
     </div>
   </div>
 
